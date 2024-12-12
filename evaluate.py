@@ -13,20 +13,21 @@ def evaluate_conversations(scenario, conversations, api_key, rater):
     quality_score_list = []
     user_type_success_counter = {key: [] for key in scenario.user_types.keys()}
     user_type_prompts = scenario.generate_prompt_for_user_type_classifier()
-    quality_prompt = scenario.generate_prompt_for_conversation_quality_assessor()
+    # quality_prompt = scenario.generate_prompt_for_conversation_quality_assessor()
     for conv in conversations:
-        quality_score = client.chat.completions.create(
-            model=rater,
-            messages=[
-                {"role": "system", "content": quality_prompt},
-                {"role": "user", "content": conv['conversation']}
-            ],
-        ).choices[0].message.content
-        score = None
-        for n in range(1, 6):
-            if str(n) in quality_score:
-                score = n
-        quality_score_list.append(score)
+        # quality_score = client.chat.completions.create(
+        #     model=rater,
+        #     messages=[
+        #         {"role": "system", "content": quality_prompt},
+        #         {"role": "user", "content": conv['conversation']}
+        #     ],
+        # ).choices[0].message.content
+        # print(quality_score)
+        # score = None
+        # for n in range(1, 6):
+        #     if str(n) in quality_score:
+        #         score = n
+        # quality_score_list.append(score)
         for key in scenario.user_types.keys():
             prediction = client.chat.completions.create(
                 model=rater,
@@ -35,10 +36,11 @@ def evaluate_conversations(scenario, conversations, api_key, rater):
                     {"role": "user", "content": conv['conversation']}
                 ]
             ).choices[0].message.content
-            user_type_success_counter[key].append(int(prediction == conv['user_type'][key]))
-    print(quality_score_list)
+            print(conv['user_type'][key], prediction)
+            user_type_success_counter[key].append(int(conv['user_type'][key] in prediction))
+    # print(quality_score_list)
     print(user_type_success_counter)
-    print("conversation quality", sum(quality_score_list) / len(quality_score_list))
+    # print("conversation quality", sum(quality_score_list) / len(quality_score_list))
     for key in scenario.user_types.keys():
         print(key, sum(user_type_success_counter[key])/len(user_type_success_counter[key]))
 

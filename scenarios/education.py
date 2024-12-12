@@ -6,7 +6,7 @@ class Education(Scenario):
     user_name = 'Student'
     user_types = {
         "Education level": ["Primary school", "High school", "University"],
-        "Preferred learning style": ["Conceptual", "Analytical", "Interactive"]
+        "Interaction style": ["Expressive", "Passive"]
     }
     topics = [
         "Rainbows",
@@ -94,25 +94,47 @@ Provide only the chosen education level as plain text. Ensure there are no addit
 - For advanced discussions involving specialized knowledge, respond with "University".
         """
         learning_style_prompt = """
-Determine the student's learning style based on a conversation analysis with a teacher. Consider factors such as communication style, problem-solving approach, and question engagement. Your answer should be one of the following categories:
+Determine the student's interaction style based on a conversation analysis with a teacher. Consider factors such as communication style, problem-solving approach, and question engagement. Your answer should be one of the following categories:
 
-- Conceptual
-- Analytical
-- Interactive
+- Expressive
+- Passive
+
+# Steps
+
+1. Analyze the provided conversation.
+2. Evaluate the student's communication style.
+3. Determine the problem-solving approach.
+4. Assess the level of question engagement.
+5. Categorize using the defined interaction styles.
 
 # Output Format
 
-Provide only the predicted learning style as plain text. Ensure there are no additional comments, symbols, or formatting like bold or italics. The response should consist solely of one of the three categories listed above: "Conceptual", "Analytical", or "Interactive".
+Provide only the predicted learning style as plain text. Ensure there are no additional comments, symbols, or formatting like bold or italics. The response should consist solely of one of the two categories listed above: "Expressive" or "Passive".
 
 # Examples
 
-- If the student shows preference for understanding overarching ideas and frameworks, respond with "Conceptual".
-- For students who excel in breaking down problems and analyzing data, respond with "Analytical".
-- For those who are engaged through discussion and collaboration, respond with "Interactive".
+## Example Conversation 1
+**Teacher**: What do you think of this problem?
+**Student**: I think it can be solved by...
+**Teacher**: Why do you believe that's the best approach?
+**Student**: Because it seems efficient and addresses all points.
+**Analysis**: Engages actively, offers and defends solution -> "Expressive"
+
+## Example Conversation 2
+**Teacher**: How do you find this topic?
+**Student**: It's okay, I guess.
+**Teacher**: Do you have any thoughts on improving it?
+**Student**: Not really...
+**Analysis**: Minimal engagement, passive responses -> "Passive"
+
+# Notes
+
+- Consider conversational nuances such as tone, enthusiasm, and body language where applicable.
+- Ensure each example reflects a distinct engagement style, focusing on verbally discernible traits.
         """
         prompts = {
             "Education level": education_level_prompt,
-            "Preferred learning style": learning_style_prompt,
+            "Interaction style": learning_style_prompt,
         }
         return prompts
 
@@ -131,11 +153,12 @@ Your task is to assess the conversation based on the above characteristics and p
 
 # Output Format
 
-The output should be a single integer score between 1 and 5, representing the quality of the interaction.
+The output should be a single integer score between 1 and 5, representing the quality of the interaction. Do NOT output any explanations.
 
 # Notes
 
 - Consider both the teacher's and student's participation.
 - Higher scores reflect better adherence to the key elements.
+- Do not easily give a score of 5, reserve it for truly exceptional interactions.
         """
         return prompt

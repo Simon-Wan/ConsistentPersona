@@ -1,10 +1,13 @@
 # Consistent Persona Simulation
 import argparse
 import json
+from random import random
+
 from scenarios.education import Education
 import os
 import os.path as osp
 from openai import OpenAI
+import numpy as np
 
 
 def generate_conversations(scenario, agent, user, num_conv, api_key):
@@ -67,6 +70,7 @@ def generate_conversations(scenario, agent, user, num_conv, api_key):
 
 
 def main():
+    np.random.seed(42)
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--scenario', required=True)
     parser.add_argument('-m', '--model', required=True)

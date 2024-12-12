@@ -11,24 +11,9 @@ def evaluate_conversations(scenario, conversations, api_key, rater):
     client = OpenAI(
         api_key=api_key,
     )
-    quality_score_list = []
     user_type_success_counter = {key: [] for key in scenario.user_types.keys()}
     user_type_prompts = scenario.generate_prompt_for_user_type_classifier()
-    # quality_prompt = scenario.generate_prompt_for_conversation_quality_assessor()
     for conv in conversations:
-        # quality_score = client.chat.completions.create(
-        #     model=rater,
-        #     messages=[
-        #         {"role": "system", "content": quality_prompt},
-        #         {"role": "user", "content": conv['conversation']}
-        #     ],
-        # ).choices[0].message.content
-        # print(quality_score)
-        # score = None
-        # for n in range(1, 6):
-        #     if str(n) in quality_score:
-        #         score = n
-        # quality_score_list.append(score)
         for key in scenario.user_types.keys():
             prediction = client.chat.completions.create(
                 model=rater,
@@ -39,9 +24,7 @@ def evaluate_conversations(scenario, conversations, api_key, rater):
             ).choices[0].message.content
             print(conv['user_type'][key], prediction)
             user_type_success_counter[key].append(int(conv['user_type'][key] in prediction))
-    # print(quality_score_list)
     print(user_type_success_counter)
-    # print("conversation quality", sum(quality_score_list) / len(quality_score_list))
     for key in scenario.user_types.keys():
         print(key, sum(user_type_success_counter[key])/len(user_type_success_counter[key]))
 
@@ -54,6 +37,7 @@ def main():
     parser.add_argument('--oracle_model', default='gpt-4o')
     parser.add_argument('-d', '--data_dir', default='./data')
     parser.add_argument('--api_key', required=True)
+    parser.add_argument('--use_vanilla', action='store_true')
     args = parser.parse_args()
 
     if args.scenario == 'education':
@@ -70,6 +54,8 @@ def main():
         raise ValueError(f'Oracle model {args.oracle_model} not supported')     # Use GPT-4o as the most powerful model
 
     filename = f'conv_{args.scenario}_{args.oracle_model}_{args.model}_{args.num_conv}.json'
+    if args.use_vanilla:
+        filename = f'conv_{args.scenario}_{args.oracle_model}_{args.model}_{args.num_conv}_vanilla.json'
     with open(osp.join(args.data_dir, filename), 'r') as f:
         conversations = json.load(f)
 

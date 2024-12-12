@@ -8,10 +8,6 @@ for ((i=0; i<${#items[@]}; i++)); do
   for ((j=i+1; j<${#items[@]}; j++)); do
     m1="${items[i]}"
     m2="${items[j]}"
-    python quality_compare.py -s education -m1 $m1 -m2 $m2 --api_key ${API_KEY} -n 5
+    python quality_compare.py -s education -m1 $m1 -m2 $m2 --api_key ${API_KEY} -n 50
   done
 done
-
-
-
-model_names=

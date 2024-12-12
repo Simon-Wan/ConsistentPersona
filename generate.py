@@ -11,7 +11,7 @@ from openai import OpenAI
 import numpy as np
 
 
-def generate_conversations(scenario, agent, user, num_conv, api_key):
+def generate_conversations(scenario, agent, user, num_conv, api_key, use_vanilla=False):
     client = OpenAI(
         api_key=api_key,
     )
@@ -25,7 +25,7 @@ def generate_conversations(scenario, agent, user, num_conv, api_key):
             "topic": topic,
         }
         agent_system_prompt = scenario.generate_prompt_for_oracle_agent(user_type, topic)
-        user_system_prompt = scenario.generate_prompt_for_user_candidate(user_type, topic)
+        user_system_prompt = scenario.generate_prompt_for_user_candidate(user_type, topic, use_vanilla=use_vanilla)
         agent_messages = [{
             "role": "system",
             "content": agent_system_prompt,
@@ -79,6 +79,7 @@ def main():
     parser.add_argument('--oracle_model', default='gpt-4o')
     parser.add_argument('-d', '--data_dir', default='./data')
     parser.add_argument('--api_key', required=True)
+    parser.add_argument('--use_vanilla', action='store_true')
     args = parser.parse_args()
 
     if args.scenario == 'education':
@@ -94,10 +95,12 @@ def main():
     if args.oracle_model != 'gpt-4o':
         raise ValueError(f'Oracle model {args.oracle_model} not supported')     # Use GPT-4o as the most powerful model
 
-    conversations = generate_conversations(scenario, args.oracle_model, args.model, args.num_conv, args.api_key)
+    conversations = generate_conversations(scenario, args.oracle_model, args.model, args.num_conv, args.api_key, args.use_vanilla)
     if not osp.exists(args.data_dir):
         os.makedirs(args.data_dir)
     filename = f'conv_{args.scenario}_{args.oracle_model}_{args.model}_{args.num_conv}.json'
+    if args.use_vanilla:
+        filename = f'conv_{args.scenario}_{args.oracle_model}_{args.model}_{args.num_conv}_vanilla.json'
     with open(osp.join(args.data_dir, filename), 'w') as f:
         json.dump(conversations, f)
 

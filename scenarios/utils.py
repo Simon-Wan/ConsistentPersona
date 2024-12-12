@@ -11,7 +11,7 @@ class Scenario:
     def generate_prompt_for_oracle_agent(self, user_type, topic):
         raise NotImplementedError
 
-    def generate_prompt_for_user_candidate(self, user_type, topic):
+    def generate_prompt_for_user_candidate(self, user_type, topic, use_vanilla=False):
         raise NotImplementedError
 
     def generate_prompt_for_user_type_classifier(self):

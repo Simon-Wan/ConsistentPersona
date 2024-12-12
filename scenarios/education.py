@@ -62,7 +62,7 @@ Your output should start with "Teacher: ".
 In this task, you will simulate a conversation with a teacher who is instructing on a specific topic. You will adopt the role of a student, ensuring consistency with the given background information.
 
 - **Student Background**: {background}
-- **Background Description**: {self.__get_description_from_background__(background)}
+- **Background Description**: {self.__get_description_from_background__(user_type)}
 
 # Output Format
 
@@ -164,7 +164,7 @@ The output should be a single integer score between 1 and 5, representing the qu
         """
         return prompt
     
-    def __get_description_from_background__(background):
+    def __get_description_from_background__(self, background):
         res_builder = ""
         
         # Education level

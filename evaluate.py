@@ -2,6 +2,7 @@
 import argparse
 import json
 from scenarios.education import Education
+from scenarios.therapist import Therapist
 import os.path as osp
 from openai import OpenAI
 
@@ -57,6 +58,8 @@ def main():
 
     if args.scenario == 'education':
         scenario = Education()
+    elif args.scenario == 'therapist':
+        scenario = Therapist()
     else:
         raise ValueError(f'Scenario {args.scenario} not implemented')           # Add your scenario here
 

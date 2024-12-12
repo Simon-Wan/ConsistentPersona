@@ -13,7 +13,8 @@ def evaluate_conversations(scenario, conversations, api_key, rater):
     )
     user_type_success_counter = {key: [] for key in scenario.user_types.keys()}
     user_type_prompts = scenario.generate_prompt_for_user_type_classifier()
-    for conv in conversations:
+    key_label_prediction = []
+    for i, conv in enumerate(conversations):
         for key in scenario.user_types.keys():
             prediction = client.chat.completions.create(
                 model=rater,
@@ -22,8 +23,9 @@ def evaluate_conversations(scenario, conversations, api_key, rater):
                     {"role": "user", "content": conv['conversation']}
                 ]
             ).choices[0].message.content
-            print(conv['user_type'][key], prediction)
+            key_label_prediction.append(f"i={i}", f"key={key}", f"label={conv['user_type'][key]}", f"prediction={prediction}")
             user_type_success_counter[key].append(int(conv['user_type'][key] in prediction))
+    print(key_label_prediction)
     print(user_type_success_counter)
     for key in scenario.user_types.keys():
         print(key, sum(user_type_success_counter[key])/len(user_type_success_counter[key]))

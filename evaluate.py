@@ -23,7 +23,7 @@ def evaluate_conversations(scenario, conversations, api_key, rater):
                     {"role": "user", "content": conv['conversation']}
                 ]
             ).choices[0].message.content
-            key_label_prediction.append(f"i={i}", f"key={key}", f"label={conv['user_type'][key]}", f"prediction={prediction}")
+            key_label_prediction.append((f"i={i}", f"key={key}", f"label={conv['user_type'][key]}", f"prediction={prediction}"))
             user_type_success_counter[key].append(int(conv['user_type'][key] in prediction))
     print(key_label_prediction)
     print(user_type_success_counter)

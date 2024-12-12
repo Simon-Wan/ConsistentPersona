@@ -39,11 +39,22 @@ Your output should start with "Therapist: ".
         """
         return prompt
 
-    def generate_prompt_for_user_candidate(self, user_type, topic):
+    def generate_prompt_for_user_candidate(self, user_type, topic, use_vanilla=False):
         background = ''
         for key in user_type:
             background += f'{key}: {user_type[key]}. '
-        prompt = f"""
+        if use_vanilla:
+            prompt = f"""
+In this task, you will simulate a conversation with a teacher who is instructing on a specific topic. You will adopt the role of a student, ensuring consistency with the given background information.
+
+- **Student Background**: {background}
+
+# Output Format
+
+Your output should start with "Student: ".
+"""
+        else:
+            prompt = f"""
 In this task, you will simulate a conversation with a therapist. You will adopt the role of a patient seeking help, ensuring consistency with the given background information.
 
 - **Patient Background**: {background}

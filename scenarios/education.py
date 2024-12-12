@@ -62,6 +62,7 @@ Your output should start with "Teacher: ".
 In this task, you will simulate a conversation with a teacher who is instructing on a specific topic. You will adopt the role of a student, ensuring consistency with the given background information.
 
 - **Student Background**: {background}
+- **Background Description**: {self.__get_description_from_background__(background)}
 
 # Output Format
 
@@ -162,3 +163,22 @@ The output should be a single integer score between 1 and 5, representing the qu
 - Do not easily give a score of 5, reserve it for truly exceptional interactions.
         """
         return prompt
+    
+    def __get_description_from_background__(background):
+        res_builder = ""
+        
+        # Education level
+        if background["Education level"] == "Primary school":
+            res_builder += "The student is at the primary school level, indicating a basic understanding of concepts and simple language use."
+        elif background["Education level"] == "High school":
+            res_builder += "The student is at the high school level, suggesting a more advanced understanding of topics and language complexity."
+        elif background["Education level"] == "University":
+            res_builder += "The student is at the university level, indicating a high level of knowledge and language proficiency."
+        
+        # Interaction style
+        if background["Interaction style"] == "Expressive":
+            res_builder += " The student is very talkative, actively offering opinions and asking questions. The student gives lengthy responses."
+        elif background["Interaction style"] == "Passive":
+            res_builder += " The student is very passive, and does not offer opinions or ask questions. The student gives short responses."
+        
+        return res_builder
